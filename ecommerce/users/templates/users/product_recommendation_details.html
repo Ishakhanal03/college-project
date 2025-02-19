@@ -1,0 +1,38 @@
+<!-- product_recommendation_details.html -->
+
+<div class="container">
+    <h1 class="text-center mt-4" style="color: #33cc99;">How this product was recommended</h1>
+
+    <div class="row mt-4">
+        <!-- Similar Products -->
+        <div class="col-12">
+            <h3>Top 10 Similar Products</h3>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Cosine Similarity Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for similar_product, score in similar_products|zip:similarity_scores %}
+                    <tr>
+                        <td>{{ similar_product }}</td>
+                        <td>{{ score }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Recommended Products -->
+        <div class="col-12">
+            <h3 class="mt-4">Recommended Products</h3>
+            <ul>
+                {% for product in recommended_products %}
+                <li>{{ product }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>

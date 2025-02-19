@@ -13,7 +13,7 @@ from django.shortcuts import redirect, get_object_or_404
 from products.models import Product, Category
 from .models import Cart, Order,  OrderItem,Address
 from django.utils.decorators import method_decorator
-from .recommendation import get_recommendations,recommend_products
+from .recommendation import get_recommendations,recommend_products,get_matrix
 from surprise import  SVD
 import joblib
 model = SVD()
@@ -23,20 +23,19 @@ model = joblib.load('lightfm_model.pkl')
 # Create your views here.
 def index(request):
     categories = Category.objects.all() 
-    products = Product.objects.all().order_by('-id')  # Fetch all products in descending order
-    products_by_category = {}  # Dictionary to store products grouped by category
-    
+    products = Product.objects.all().order_by('-id')  
+    products_by_category = {}  
     for category in categories:
-        # Get up to 6 products for the current category
+        
         products_in_category = Product.objects.filter(category=category)[:6]
         products_by_category[category] = products_in_category
-    
     if request.user.is_authenticated:
         user_id = request.user.id
         product_list = products.values_list('id', flat=True)
         top_recommended_items = get_recommendations(user_id, model, product_list)
         recommended_products = Product.objects.filter(id__in=top_recommended_items)
-        idi=recommend_products("User_1")
+        user_str = f'User_{user_id}'
+        idi=recommend_products(user_str)
         int_id = [int(i) for i in idi]
         user_recommendeded_products = Product.objects.filter(id__in=int_id)
         
@@ -55,9 +54,11 @@ def index(request):
             'categories': categories,
             'products_by_category': products_by_category,
             
-        }
-        
+        }    
     return render(request, 'users/index.html', context)
+
+
+
 
 
 @login_required
@@ -404,7 +405,34 @@ def my_order(request):
 
 
 
+from django.http import JsonResponse
 
+def show_matrix(request):
+        user=request.user
+        user_id="User_"+str(user.id)
+        # user_id = "User_1"  # Hardcoded user_id for demonstration purposes
+    # try:
+        # Fetch the user interactions, interacted products, and product matrices
+        user_interactions, interacted_products, product_matrices = get_matrix(user_id)
+        
+        # Build the dictionary for JSON response
+        response_data = {
+            "user_id": user_id,  
+            "user_interactions": user_interactions.astype(int).to_dict(),  
+            "interacted_products": interacted_products,
+            "product_matrices": {
+                str(product): {
+                    str(interacted_product): {
+                        "Similarity Score": float(details["Similarity Score"]),  
+                        "User Interaction Value": int(details["User Interaction Value"])  
+                    }
+                    for interacted_product, details in matrix.items()
+                }
+                for product, matrix in product_matrices.items()
+            }
+        }
+
+        return JsonResponse(response_data, safe=False)
 
 
 

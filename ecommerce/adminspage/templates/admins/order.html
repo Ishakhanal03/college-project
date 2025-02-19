@@ -43,14 +43,14 @@
                     <tbody>
                         {% for order in orders %}
                             <tr>
-                                <td>{{ order.customer.username }}</td>
+                                <td>{{ order.user }}</td>
                                 <td>{{ order.contact_no }}</td>
                                 <td>{{ order.address }}</td>
                                 <td>{{ order.payment_method }}</td>
                                 <td>
                                     <ul>
                                         {% for item in order.items.all %}
-                                            <li>{{ item.product_name }} - Rs{{ item.product_price }}</li>
+                                            <li>{{ item.product }} - Rs {{ item.total_price }}</li>
                                         {% endfor %}
                                     </ul>
                                 </td>

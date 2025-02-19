@@ -264,7 +264,7 @@ body {
                  style="width: 100%; height: 100%; object-fit: cover;">
           </div>
           
-          <!-- Card Body -->
+          <!-- Card Body -->w
           <div class="card-body">
             <!-- Product Name -->
             <h5 class="card-title">
@@ -403,9 +403,76 @@ body {
   }
 </style>
 <!-- Top Seller -->
-<h3 class="f">Top seller</h3>
+<div class="container-fluid">
+  <h1 
+    class="text-center mt-4" 
+    style="font-size: 2.5rem; color: #33cc99; font-weight: bold; text-transform: capitalize; text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); margin-bottom: 20px; letter-spacing: 1px;">
+    Top Seller
+  </h1>
+  
+  <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
+    {% for item in recommended %}
+      <div class="col">
+        <div class="card shadow-sm border-light rounded-3 p-2"> 
+          <!-- Product Image Container -->
+          <div style="height: 200px; overflow: hidden;">
+            <img src="/{{ item.product_image }}" 
+                 class="card-img-top rounded-3" 
+                 alt="{{ item.product_name }}" 
+                 style="width: 100%; height: 100%; object-fit: cover;">
+          </div>
+          
+          <!-- Card Body -->
+          <div class="card-body">
+            <!-- Product Name -->
+            <h5 class="card-title">
+              <a href="/productdetails/{{ item.id }}" class="text-decoration-none text-dark">
+                {{ item.product_name }}
+              </a>
+            </h5>
+
+            <!-- Product Price -->
+            <h3 class="text mb-3" style="color: rgb(24, 92, 24); font-weight: bold;">
+              Rs.{{ item.product_price }}
+            </h3>
+
+            <!-- Add to Cart Button -->
+            <form action="/addtocart/{{ item.id }}/" method="POST" class="d-flex justify-content-between align-items-center">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-primary flex-grow-1 me-2">
+                <i class="fas fa-shopping-cart me-2"></i> Add to Cart
+              </button>
+              
+              <!-- Wishlist Button -->
+              <button type="button" class="btn btn-outline-danger">
+                <a href="/add_to_wishlist/{{ item.id }}/" class="text-decoration-none text-danger" title="Add to Wishlist">
+                    <i class="fas fa-heart"></i>
+                </a>
+              </button>
+            </form>
+
+            <!-- Link to view recommendation calculation -->
+            
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+
+<!-- top seller -->
+
+<!-- to recommendation -->
+<div class="container-fluid">
+  <h1 
+  class="text-center mt-4" 
+  style="font-size: 2.5rem; color: #33cc99; font-weight: bold; text-transform: capitalize; text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); margin-bottom: 20px; letter-spacing: 1px;"
+>
+  Recommendation Product
+</h1>
 <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
-  {% for item in recommended %}
+  {% for item in user_recommendeded_products %}
     <div class="col">
       <div class="card shadow-sm border-light rounded-3 p-2"> 
         <!-- Product Image Container -->
@@ -444,15 +511,19 @@ body {
               </a>
           </button>
           </form>
+          <p class="mt-3">
+            <a href="/show" class="text-decoration-none text-info" title="View Recommendation Calculation">
+              View how this product was recommended
+            </a>
+          </p>
         </div>
       </div>
     </div>
   {% endfor %}
 </div>
+ <!-- to recommendations -->
 
-<!-- top seller -->
-
-<section class="mid">
+<!-- <section class="mid">
   <div class="mid-1">
       <div class="mid-2">
         <i class="fa-solid fa-leaf"></i>
@@ -474,54 +545,9 @@ body {
       <h4>Delivery all over Nepal</h4>
       <p>We find variety of eco-friendly product and deliver to your doorsteps</p>
   </div>
-</section>
+</section> -->
 
 
-<div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
-  {% for item in user_recommended_products %}
-    <div class="col">
-      <div class="card shadow-sm border-light rounded-3 p-2"> 
-        <!-- Product Image Container -->
-        <div style="height: 200px; overflow: hidden;">
-          <img src="/{{ item.product_image }}" 
-               class="card-img-top rounded-3" 
-               alt="{{ item.product_name }}" 
-               style="width: 100%; height: 100%; object-fit: cover;">
-        </div>
-        
-        <!-- Card Body -->
-        <div class="card-body">
-          <!-- Product Name -->
-          <h5 class="card-title">
-            <a href="/productdetails/{{ item.id }}" class="text-decoration-none text-dark">
-              {{ item.product_name }}
-            </a>
-          </h5>
-
-          <!-- Product Price -->
-          <h3 class="text mb-3" style="color: rgb(24, 92, 24); font-weight: bold;">
-            Rs.{{ item.product_price }}
-          </h3>
-
-          <!-- Add to Cart Button -->
-          <form action="/addtocart/{{ item.id }}/" method="POST" class="d-flex justify-content-between align-items-center">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-primary flex-grow-1 me-2">
-              <i class="fas fa-shopping-cart me-2"></i> Add to Cart
-            </button>
-            
-            <!-- Wishlist Button -->
-            <button type="button" class="btn btn-outline-danger">
-              <a href="/add_to_wishlist/{{ item.id }}/" class="text-decoration-none text-danger" title="Add to Wishlist">
-                  <i class="fas fa-heart"></i>
-              </a>
-          </button>
-          </form>
-        </div>
-      </div>
-    </div>
-  {% endfor %}
-  </div>
 
 
 {% include 'users/footer.html' %}
