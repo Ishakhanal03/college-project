@@ -34,10 +34,7 @@ def recommend_products(user_id, top_n=10):
     
     user_interactions = interaction_matrix.loc[user_id]
     interacted_products = user_interactions[user_interactions > 0].index.tolist()
-
-    
     product_scores = {}
-    
     for product in interaction_matrix.columns:
         if product not in interacted_products:
             
@@ -47,12 +44,8 @@ def recommend_products(user_id, top_n=10):
             product_scores[product] = similarity_score
 
     
-    sorted_products = sorted(product_scores.items(), key=lambda x: x[1], reverse=True)
-    
+    sorted_products = sorted(product_scores.items(), key=lambda x: x[1], reverse=True) 
     top_products = [product for product, score in sorted_products[:top_n]]
-
-
-    
     return top_products
 
 
@@ -60,16 +53,10 @@ def get_matrix(user_id):
     """
     Returns the interaction matrix for a given user and the similarity matrix for each product from which
     the recommendation score was calculated.
-    """
-    
+    """ 
     user_interactions = interaction_matrix.loc[user_id]
-    
-    
     interacted_products = user_interactions[user_interactions > 0].index.tolist()
-
-    
     product_matrices = {}
-
     for product in interaction_matrix.columns:
         if product not in interacted_products:
             similarity_matrix = {}
